@@ -24,34 +24,49 @@ const ParticleField = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    class Particle {
-      x!: number;
-      y!: number;
-      size!: number;
-      speedY!: number;
-      speedX!: number;
-      opacity!: number;
+    function createParticle() {
+      const p: any = {
+        x: Math.random() * c.width,
+        y: -10,
+        size: Math.random() * 3 + 1,
+        speedY: Math.random() * 0.5 + 0.2,
+        speedX: Math.random() * 0.3 - 0.15,
+        opacity: Math.random() * 0.5 + 0.2,
+        reset() {
+          this.x = Math.random() * c.width;
+          this.y = -10;
+          this.size = Math.random() * 3 + 1;
+          this.speedY = Math.random() * 0.5 + 0.2;
+          this.speedX = Math.random() * 0.3 - 0.15;
+          this.opacity = Math.random() * 0.5 + 0.2;
+        },
+        update() {
+          this.y += this.speedY;
+          this.x += this.speedX;
 
-      constructor() {
-        this.reset();
-        this.y = Math.random() * c.height;
-        this.opacity = Math.random() * 0.5 + 0.2;
-      }
+          if (this.y > c.height) {
+            this.reset();
+          }
 
-      reset() {
-        this.x = Math.random() * c.width;
-        this.y = -10;
-        this.size = Math.random() * 3 + 1;
-        this.speedY = Math.random() * 0.5 + 0.2;
-        this.speedX = Math.random() * 0.3 - 0.15;
-        this.opacity = Math.random() * 0.5 + 0.2;
-      }
+          if (this.x < 0 || this.x > c.width) {
+            this.x = Math.random() * c.width;
+          }
+        },
+        draw() {
+          context.fillStyle = `rgba(59, 204, 255, ${this.opacity})`;
+          context.beginPath();
+          context.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          context.fill();
+        }
+      };
 
+      p.y = Math.random() * c.height;
+      return p;
     }
 
     // Create particles
     for (let i = 0; i < 80; i++) {
-      particles.push(new Particle());
+      particles.push(createParticle());
     }
 
     const animate = () => {
